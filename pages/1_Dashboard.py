@@ -7,7 +7,9 @@ import sys
 sys.path.insert(0, 'src')
 
 
-from utils_fixed import load_data, plot_risk_psych_violins, plot_psych_corr, plot_risk_scatter_trends, plot_age_depression_trend, plot_age_risk_violin, plot_employment_trends
+from src.utils_clean import load_data, plot_risk_psych_violins, plot_psych_corr, plot_risk_scatter_trends, plot_age_depression_trend, plot_age_risk_violin, plot_employment_trends
+import sys
+sys.path.insert(0, 'src')
 
 
 from config import DATA_RAW, FIGURES_DIR
