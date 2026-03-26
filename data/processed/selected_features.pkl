@@ -1,0 +1,1 @@
+['age', 'marital_status', 'education_level', 'sleep_hours', 'physical_activity_hours_per_week', 'screen_time_hours_per_day', 'social_support_score', 'work_stress_level', 'job_satisfaction_score', 'financial_stress_level', 'anxiety_score', 'depression_score', 'panic_attack_history', 'family_history_mental_illness', 'substance_use']
