@@ -6,12 +6,7 @@ import os
 import sys
 sys.path.insert(0, 'src')
 
-
 from src.utils_clean import load_data, plot_risk_psych_violins, plot_psych_corr, plot_risk_scatter_trends, plot_age_depression_trend, plot_age_risk_violin, plot_employment_trends
-import sys
-sys.path.insert(0, 'src')
-
-
 from config import DATA_RAW, FIGURES_DIR
 
 st.header("📊 Data Overview & EDA")
@@ -40,7 +35,6 @@ with st.expander("Data Source"):
     st.info("📋 Dataset: 25 features, demographics + psych scores. Target: risk (0=Low,1=Mod,2=High)")
 
 # Target distribution
-
 fig_pie = px.pie(df, names='mental_health_risk', 
                  title='<b>Mental Health Risk Distribution</b>',
                  color_discrete_sequence=['#2E8B57', '#FF8C00', '#DC143C'],
@@ -53,11 +47,9 @@ fig_pie.update_layout(
 )
 st.plotly_chart(fig_pie, use_container_width=True)
 
-
 # Key features distribution
 key_features = ['age', 'sleep_hours', 'screen_time_hours_per_day', 
                 'anxiety_score', 'depression_score', 'stress_level']
-
 
 for feature in key_features:
     fig = px.histogram(df, x=feature, 
@@ -67,17 +59,16 @@ for feature in key_features:
                        nbins=25, opacity=0.8,
                        labels={'value': feature.title()})
     fig.update_layout(
-
         font=dict(size=12),
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        height=350,
+        height=450,
         title_font_size=16,
-        showlegend=False
+        showlegend=False,
+        width=None
     )
     fig.update_traces(marker_line_color='white', marker_line_width=1)
     st.plotly_chart(fig, use_container_width=True)
-
 
 # Correlation heatmap
 if os.path.exists(os.path.join(FIGURES_DIR, 'correlation.png')):
@@ -102,7 +93,6 @@ with col2:
         plot_psych_corr(df)
         st.image(os.path.join(FIGURES_DIR, 'psych_corr.png'), caption="Psych Corr")
 
-
 fig_scatter = plot_risk_scatter_trends(df)
 st.plotly_chart(fig_scatter, use_container_width=True)
 
@@ -120,5 +110,4 @@ col_emp1.plotly_chart(fig_emp_risk, use_container_width=True)
 col_emp2.plotly_chart(fig_emp_dep, use_container_width=True)
 
 st.success("Full explorative EDA complete! Preprocessing → Modeling → Prediction")
-
 
