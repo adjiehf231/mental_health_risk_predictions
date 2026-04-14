@@ -12,37 +12,35 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 import os
+import sys
 
-# Fallback imports for standalone/script mode
-try:
-    from .config import MODELS_DIR, METRICS_FILE, FIGURES_DIR, RANDOM_STATE, KFOLD, TOP_FEATURES
-    from .utils import save_model, save_metrics, plot_roc_multi
-    from .preprocessing import preprocess_data
-except ImportError:
-    BASE_DIR = '.'
-    MODELS_DIR = os.path.join(BASE_DIR, 'models')
-    METRICS_FILE = os.path.join(BASE_DIR, 'reports', 'metrics.json')
-    FIGURES_DIR = os.path.join(BASE_DIR, 'reports', 'figures')
-    RANDOM_STATE = 42
-    KFOLD = 5
-    TOP_FEATURES = 15
-    def save_model(model, name):
-        joblib.dump(model, os.path.join(MODELS_DIR, name))
-    def save_metrics(metrics):
-        with open(METRICS_FILE, 'w') as f:
-            json.dump(metrics, f)
-    def plot_roc_multi(y_test, y_proba):
-        pass  # Skip ROC in fallback
-    def preprocess_data():
-        from preprocessing import preprocess_data
-        return preprocess_data()
+# Add src to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Config
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODELS_DIR = os.path.join(BASE_DIR, 'models')
+METRICS_FILE = os.path.join(BASE_DIR, 'reports', 'metrics.json')
+FIGURES_DIR = os.path.join(BASE_DIR, 'reports', 'figures')
+RANDOM_STATE = 42
+KFOLD = 5
+TOP_FEATURES = 15
+
+def save_model(model, name):
+    os.makedirs(MODELS_DIR, exist_ok=True)
+    joblib.dump(model, os.path.join(MODELS_DIR, name))
+
+def save_metrics(metrics):
+    os.makedirs(os.path.dirname(METRICS_FILE), exist_ok=True)
+    with open(METRICS_FILE, 'w') as f:
+        json.dump(metrics, f)
 
 os.makedirs(FIGURES_DIR, exist_ok=True)
 
 MODELS_DICT = {
     'C4.5 (DT)': DecisionTreeClassifier(random_state=RANDOM_STATE, max_depth=10),
     'Random Forest': RandomForestClassifier(n_estimators=100, random_state=RANDOM_STATE),
-    'Naive Bayes': GaussianNB(),
+'Naive Bayes': GaussianNB(),
     'KNN': KNeighborsClassifier(n_neighbors=10),
     'SVM': SVC(kernel='rbf', probability=True, random_state=RANDOM_STATE)
 }
@@ -74,37 +72,41 @@ def kfold_cv_scores(model, X, y):
     }
 
 def train_models():
-    # Preprocess full
+    print("Loading preprocessing...")
+    from src.preprocessing import preprocess_data
     df_proc, selected_features, encoders, scaler, selector = preprocess_data()
     X = df_proc[selected_features]
     y = df_proc['mental_health_risk']
     
+    print("Running K-Fold CV...")
     metrics = {}
     for name, model in MODELS_DICT.items():
-        print(f"K-fold CV for {name}...")
+        print(f"  {name}...")
         scores = kfold_cv_scores(model, X, y)
         metrics[name] = scores
     
     metrics_df = pd.DataFrame(metrics).T
-    reports_path = os.path.join(os.path.dirname(__file__), '..', 'reports')
+    reports_path = os.path.dirname(os.path.abspath(__file__))
+    reports_path = os.path.join(reports_path, '..', 'reports')
     os.makedirs(reports_path, exist_ok=True)
     metrics_df.to_csv(os.path.join(reports_path, 'model_comparison.csv'))
     
     best_model_name = metrics_df['F1-Score'].idxmax()
-    print(f"Best: {best_model_name} (F1: {metrics_df['F1-Score'][best_model_name]:.3f})")
+    print(f"\nBest model: {best_model_name} (F1: {metrics_df['F1-Score'][best_model_name]:.3f})")
     
     best_model = MODELS_DICT[best_model_name]
-    best_model.fit(X, y)  # Full data fit
+    best_model.fit(X, y)
     
     save_model(best_model, 'best_model.pkl')
     save_model(scaler, 'scaler.pkl')
     save_model(selector, 'selector.pkl')
     save_model(encoders, 'encoder.pkl')
-    save_metrics(metrics_df.to_dict())
+    joblib.dump(selected_features, os.path.join(MODELS_DIR, 'selected_features.pkl'))
     
-    print("Complete!")
+    print("\n✅ Training complete!")
     print(metrics_df.round(3))
     return metrics_df, best_model_name
 
 if __name__ == '__main__':
     train_models()
+

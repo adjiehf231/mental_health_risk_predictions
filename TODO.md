@@ -1,13 +1,39 @@
-# ✅ COMPLETE: Preprocessing page enhanced with full explorative analysis!
+# Streamlit Cloud Deployment Fix - TODO
+Status: 🚀 In Progress | Approved Plan
 
-**All done:**
-- Raw: head, corr heatmap, target pie, skewness
-- Before/after: comparisons (skew, balance)
-- Fixed: preview, selector scores bar, post-corr heatmap
+## Steps (Complete one-by-one, mark ✅ when done)
 
-**Test:** `streamlit run pages/1_Dashboard.py` → Page 2 now ultra-explorative!
+### 1. ✅ Fix requirements.txt
+- Rewrite clean pinned versions  
+- Test `pip install -r requirements.txt`
 
-**Previous fixes:**
-- Prediction page: dynamic 15-feature UI ✓
+### 2. ✅ Optimize pages/1_Dashboard.py (Heavy CSV load)
+### 3. ✅ Lazy-load models in pages/4_Prediction.py
+### 4. ✅ Remove subprocess from pages/2_Preprocessing.py & 3_Modeling.py
 
-App perfect! 🎉
+### 5. ✅ Create .streamlit/config.toml (Optional)
+
+### 6. ✅ Local test & Deploy
+- `streamlit run app.py`
+- Git commit/push  
+- Redeploy Cloud → verify no spinner
+
+**✅ Task complete!**
+
+### 3. Lazy-load models in pages/4_Prediction.py
+- Move joblib.load inside prediction button
+- Add @st.cache_resource for models
+
+### 4. Remove subprocess from pages/2_Preprocessing.py & 3_Modeling.py
+- Replace with CLI instructions
+- Add cache_data to analyses
+
+### 5. Create .streamlit/config.toml (Optional)
+- Server settings for Cloud
+
+### 6. Local test & Deploy
+- `streamlit run app.py`
+- Git commit/push
+- Redeploy Cloud → verify no spinner
+
+**Next: Step 1**

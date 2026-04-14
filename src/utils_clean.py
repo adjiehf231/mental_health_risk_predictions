@@ -6,7 +6,7 @@ import joblib
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import seaborn as sns
+# import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import label_binarize
@@ -50,12 +50,12 @@ def plot_distribution(df, col):
     return fig
 
 def plot_correlation(df_num):
-    plt.figure(figsize=(12,10))
-    sns.heatmap(df_num.corr(), annot=True, cmap='coolwarm', center=0, fmt='.2f')
-    plt.title('Feature Correlation Heatmap')
-    plt.tight_layout()
-    plt.close()
-    return None  # Use st.plotly_chart equivalent if needed
+    # seaborn removed - use plotly equivalent
+    corr_df = df_num.corr()
+    fig = px.imshow(corr_df, title='Feature Correlation Heatmap', color_continuous_scale='RdBu_r', aspect="auto")
+    fig.update_layout(height=600)
+    st.plotly_chart(fig, use_container_width=True)
+    return fig
 
 def plot_roc_multi(y_true, y_score):
     n_classes = 3
@@ -95,12 +95,10 @@ def plot_psych_corr(df):
         return None
     psych_df = df[psych_vars].corr()
     
-    plt.figure(figsize=(10,8))
-    sns.heatmap(psych_df, annot=True, cmap='RdBu_r', center=0, fmt='.2f', square=True)
-    plt.title('Psychological Features + Risk Correlation')
-    plt.tight_layout()
-    plt.close()
-    return None
+    fig = px.imshow(psych_df, title='Psychological Features + Risk Correlation', color_continuous_scale='RdBu_r')
+    fig.update_layout(height=500)
+    st.plotly_chart(fig, use_container_width=True)
+    return fig
 
 def plot_risk_scatter_trends(df):
     psych_vars = ['anxiety_score', 'depression_score', 'age']
