@@ -20,6 +20,6 @@ MODELS = {
     'C4.5 (DT)': 'DecisionTreeClassifier(random_state=RANDOM_STATE, max_depth=10)',
     'Random Forest': 'RandomForestClassifier(n_estimators=100, random_state=RANDOM_STATE)',
     'Naive Bayes': 'GaussianNB()',
-    'KNN': 'KNeighborsClassifier(n_neighbors=5)',
+    'KNN': 'KNeighborsClassifier(n_neighbors=10)',
     'SVM': 'SVC(kernel="rbf", probability=True, random_state=RANDOM_STATE)'
 }
