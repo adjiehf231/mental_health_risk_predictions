@@ -9,9 +9,11 @@ from predict import get_prediction
 
 st.set_page_config(layout="wide", page_title="Risk Prediction", initial_sidebar_state="expanded")
 st.markdown("""
-# 🔮 Mental Health Risk Prediction
-**Interactive full-width patient assessment**
-""")
+<div class='metric-card'>
+<h1 style='text-align: center; color: #4a5568;'>🔮 Mental Health Risk Prediction</h1>
+<p style='text-align: center; color: #718096;'>Adjust patient profile → instant risk assessment</p>
+</div>
+""", unsafe_allow_html=True)
 st.markdown("---")
 
 models = ['C4.5 (DT)', 'Random Forest', 'Naive Bayes', 'KNN', 'SVM']

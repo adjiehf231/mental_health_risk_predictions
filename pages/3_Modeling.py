@@ -7,9 +7,11 @@ import os
 
 st.set_page_config(layout="wide", page_title="Modeling", initial_sidebar_state="expanded")
 st.markdown("""
-# 🤖 Model Comparison (K-Fold CV)
-**Full-width responsive model analytics**
-""")
+<div class='metric-card'>
+<h1 style='text-align: center; color: #4a5568;'>🤖 Model Comparison (K-Fold CV)</h1>
+<p style='text-align: center; color: #718096;'>5 algorithms benchmarked - live results</p>
+</div>
+""", unsafe_allow_html=True)
 st.markdown("---")
 
 # CLI instruction

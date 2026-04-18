@@ -22,9 +22,11 @@ def detect_outliers(df, col):
 
 st.set_page_config(layout="wide", page_title="Preprocessing", initial_sidebar_state="expanded")
 st.markdown("""
-# 🔧 Data Preprocessing & Analysis
-**Full-width responsive analytics**
-""")
+<div class='metric-card'>
+<h1 style='text-align: center; color: #4a5568;'>🔧 Data Preprocessing & Analysis</h1>
+<p style='text-align: center; color: #718096;'>Outliers, missing values, feature engineering</p>
+</div>
+""", unsafe_allow_html=True)
 st.markdown("---", unsafe_allow_html=True)
 
 # Raw data analysis
@@ -53,7 +55,7 @@ col4.metric("Outliers", outlier_df['Count'].sum() if not outlier_df.empty else 0
 
 # Raw data preview - responsive
 st.subheader("📋 Raw Data Preview")
-st.dataframe(df_raw.head(10), use_container_width=True)
+st.dataframe(df_raw.head(10), width="stretch")
 
 # Issues summary
 col_a, col_b = st.columns(2)
