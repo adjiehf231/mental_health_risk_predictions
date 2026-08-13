@@ -1,0 +1,22 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "api/py/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/py/predict",
+      "dest": "api/py/index.py"
+    },
+    {
+      "src": "/api/py/health",
+      "dest": "api/py/index.py"
+    }
+  ]
+}
