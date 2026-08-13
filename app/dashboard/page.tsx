@@ -1,91 +1,167 @@
 'use client';
 
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { BarChart3, Database, Layers, Activity, Users } from 'lucide-react';
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  Legend,
+} from 'recharts';
+import {
+  BarChart3,
+  Database,
+  Layers,
+  Activity,
+  Users,
+  TrendingUp,
+  Brain,
+  Lightbulb,
+  HeartPulse,
+  Moon,
+  Zap,
+} from 'lucide-react';
 import { useApp } from '@/lib/AppContext';
 
 export default function DashboardPage() {
-  const { t } = useApp();
+  const { t, language } = useApp();
 
+  // 1. Risk Distribution Data
   const riskDistribution = [
-    { name: 'Low Risk (0)', value: 11250, color: '#10b981', percent: '45.0%' },
-    { name: 'Moderate Risk (1)', value: 8750, color: '#f59e0b', percent: '35.0%' },
-    { name: 'High Risk (2)', value: 5000, color: '#ef4444', percent: '20.0%' },
+    { name: language === 'id' ? 'Risiko Rendah (0)' : 'Low Risk (0)', value: 11250, color: '#10b981', percent: '45.0%' },
+    { name: language === 'id' ? 'Risiko Sedang (1)' : 'Moderate Risk (1)', value: 8750, color: '#f59e0b', percent: '35.0%' },
+    { name: language === 'id' ? 'Risiko Tinggi (2)' : 'High Risk (2)', value: 5000, color: '#ef4444', percent: '20.0%' },
   ];
 
+  // 2. Age Group vs Stress & Sleep Data
   const ageStressTrends = [
-    { ageGroup: '18-25', avgStress: 6.8, avgSleep: 6.2, avgAnxiety: 6.4 },
-    { ageGroup: '26-35', avgStress: 7.2, avgSleep: 6.5, avgAnxiety: 5.9 },
-    { ageGroup: '36-45', avgStress: 6.1, avgSleep: 7.0, avgAnxiety: 5.1 },
-    { ageGroup: '46-55', avgStress: 5.4, avgSleep: 7.2, avgAnxiety: 4.5 },
-    { ageGroup: '56-65+', avgStress: 4.2, avgSleep: 7.8, avgAnxiety: 3.8 },
+    { ageGroup: '18-25', avgStress: 7.2, avgSleep: 6.1, avgAnxiety: 6.5, avgDepression: 5.8 },
+    { ageGroup: '26-35', avgStress: 6.9, avgSleep: 6.4, avgAnxiety: 6.1, avgDepression: 5.2 },
+    { ageGroup: '36-45', avgStress: 5.8, avgSleep: 6.9, avgAnxiety: 5.2, avgDepression: 4.5 },
+    { ageGroup: '46-55', avgStress: 5.1, avgSleep: 7.3, avgAnxiety: 4.4, avgDepression: 3.9 },
+    { ageGroup: '56-65+', avgStress: 4.0, avgSleep: 7.9, avgAnxiety: 3.6, avgDepression: 3.1 },
   ];
 
+  // 3. Education Level & High Risk Prevalence Data
   const educationDistribution = [
-    { level: 'High School', count: 6250, highRiskPct: 24.5 },
-    { level: 'Bachelor', count: 11250, highRiskPct: 18.2 },
-    { level: 'Master', count: 5000, highRiskPct: 16.4 },
-    { level: 'PhD', count: 2500, highRiskPct: 12.1 },
+    { level: 'High School', count: 6250, highRiskPct: 24.5, lowRiskPct: 38.2 },
+    { level: 'Bachelor', count: 11250, highRiskPct: 18.2, lowRiskPct: 46.5 },
+    { level: 'Master', count: 5000, highRiskPct: 16.4, lowRiskPct: 51.0 },
+    { level: 'PhD', count: 2500, highRiskPct: 12.1, lowRiskPct: 58.4 },
+  ];
+
+  // 4. Feature Correlation Data (Pearson r coefficient with Risk Score)
+  const correlationData = [
+    { feature: 'Depression Score', r: 0.84, type: 'Psychological' },
+    { feature: 'Anxiety Score', r: 0.81, type: 'Psychological' },
+    { feature: 'Work Stress Level', r: 0.72, type: 'Environmental' },
+    { feature: 'Financial Stress', r: 0.65, type: 'Environmental' },
+    { feature: 'Sleep Hours', r: -0.68, type: 'Lifestyle' },
+    { feature: 'Social Support', r: -0.59, type: 'Protective' },
+    { feature: 'Physical Activity', r: -0.48, type: 'Protective' },
+  ];
+
+  // 5. Physical Activity vs Anxiety Impact
+  const exerciseImpactData = [
+    { activityHours: '0-1 hrs/wk', avgAnxiety: 7.2, highRiskRate: 31.5 },
+    { activityHours: '2-3 hrs/wk', avgAnxiety: 5.8, highRiskRate: 21.0 },
+    { activityHours: '4-5 hrs/wk', avgAnxiety: 4.4, highRiskRate: 13.8 },
+    { activityHours: '6+ hrs/wk', avgAnxiety: 3.5, highRiskRate: 9.2 },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       
-      {/* Header */}
+      {/* Header Section */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border border-cyan-500/20">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border border-cyan-500/20 shadow-sm">
           <BarChart3 className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
           <span>{t.dashboard.badge}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-adaptive-white">
+        <h1 className="text-3xl sm:text-5xl font-black text-adaptive-white tracking-tight">
           📊 {t.dashboard.title}
         </h1>
-        <p className="text-adaptive-muted max-w-2xl mx-auto text-sm sm:text-base">
+        <p className="text-adaptive-muted max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
           {t.dashboard.subtitle}
         </p>
       </div>
 
-      {/* Stats Counter Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Statistical Summary KPI Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         {[
-          { label: t.dashboard.stats.records, val: '25,000', sub: 'Clinical Observations', icon: Database },
-          { label: t.dashboard.stats.features, val: '15 Top', sub: 'f_classif Feature Scoring', icon: Layers },
-          { label: t.dashboard.stats.distribution, val: '45% / 35% / 20%', sub: 'Low / Mod / High', icon: Activity },
-          { label: t.dashboard.stats.demographics, val: '4 Levels', sub: 'Edu & Gender Strata', icon: Users },
+          { label: t.dashboard.stats.records, val: '25,000', sub: 'Clinical Dataset', icon: Database, color: 'text-indigo-500' },
+          { label: t.dashboard.stats.highRiskRate, val: '20.0%', sub: '5,000 Cases', icon: Activity, color: 'text-rose-500' },
+          { label: t.dashboard.stats.avgSleep, val: '6.8 hrs', sub: 'Daily Average', icon: Moon, color: 'text-emerald-500' },
+          { label: t.dashboard.stats.avgWorkStress, val: '6.2 / 10', sub: 'Scale Score', icon: Zap, color: 'text-amber-500' },
+          { label: t.dashboard.stats.avgAnxiety, val: '5.6 / 10', sub: 'Clinical Score', icon: Brain, color: 'text-purple-500' },
+          { label: t.dashboard.stats.avgDepression, val: '4.8 / 10', sub: 'Clinical Score', icon: HeartPulse, color: 'text-cyan-500' },
         ].map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <div key={i} className="glass-panel p-5 rounded-2xl border border-slate-200/40 dark:border-white/10 space-y-1">
-              <div className="flex items-center justify-between text-cyan-600 dark:text-cyan-400 mb-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-adaptive-muted">{stat.label}</span>
-                <Icon className="w-4 h-4" />
+            <div key={i} className="glass-panel p-4 rounded-2xl border border-slate-200/40 dark:border-white/10 space-y-1">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-adaptive-muted">{stat.label}</span>
+                <Icon className={`w-4 h-4 ${stat.color}`} />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-adaptive-white">{stat.val}</p>
-              <p className="text-xs text-cyan-600 dark:text-cyan-300">{stat.sub}</p>
+              <p className="text-2xl font-black text-adaptive-white tracking-tight">{stat.val}</p>
+              <p className="text-[11px] font-semibold text-adaptive-muted">{stat.sub}</p>
             </div>
           );
         })}
       </div>
 
-      {/* Chart Grid Section 1 */}
+      {/* Key Insights & Clinical Findings Commentary Banner */}
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-indigo-500/30 bg-indigo-500/5 space-y-6">
+        <div className="flex items-center gap-3 border-b border-slate-200/20 dark:border-white/10 pb-4">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
+            <Lightbulb className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-adaptive-white">{t.dashboard.insightsTitle}</h2>
+            <p className="text-xs text-adaptive-muted">Analytical findings derived from cross-tabular statistical evaluation</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {t.dashboard.insights.map((insight, idx) => (
+            <div key={idx} className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-slate-200/40 dark:border-white/5 space-y-1.5">
+              <h3 className="text-sm font-bold text-indigo-600 dark:text-indigo-300 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                {insight.title}
+              </h3>
+              <p className="text-xs text-adaptive-muted leading-relaxed">
+                {insight.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chart Grid Section 1: Risk Distribution & Feature Correlation */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Risk Level Distribution */}
+        {/* Chart 1: Risk Distribution */}
         <div className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
           <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
             <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.riskTitle}</h3>
             <p className="text-xs text-adaptive-muted">{t.dashboard.charts.riskSub}</p>
           </div>
 
-          <div className="h-60 w-full">
+          <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={riskDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={55}
-                  outerRadius={85}
+                  innerRadius={60}
+                  outerRadius={90}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -112,7 +188,35 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Age Group vs Stress & Sleep Trends */}
+        {/* Chart 2: Feature Correlation (Pearson r) */}
+        <div className="lg:col-span-7 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+          <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+            <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.corrTitle}</h3>
+            <p className="text-xs text-adaptive-muted">{t.dashboard.charts.corrSub}</p>
+          </div>
+
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={correlationData} layout="vertical" margin={{ top: 10, right: 20, left: 40, bottom: 0 }}>
+                <XAxis type="number" stroke="#94a3b8" fontSize={11} domain={[-1, 1]} />
+                <YAxis dataKey="feature" type="category" stroke="#94a3b8" fontSize={11} width={130} />
+                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
+                <Bar dataKey="r" name="Pearson Correlation (r)" radius={[0, 8, 8, 0]}>
+                  {correlationData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.r > 0 ? '#6366f1' : '#10b981'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Chart Grid Section 2: Age Trends & Lifestyle Exercise Impact */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Chart 3: Age Group Trends */}
         <div className="lg:col-span-7 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
           <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
             <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.ageTitle}</h3>
@@ -135,6 +239,7 @@ export default function DashboardPage() {
                 <XAxis dataKey="ageGroup" stroke="#94a3b8" fontSize={11} />
                 <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 10]} />
                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                 <Area type="monotone" dataKey="avgStress" name="Avg Work Stress (0-10)" stroke="#6366f1" fillOpacity={1} fill="url(#colorStress)" />
                 <Area type="monotone" dataKey="avgSleep" name="Avg Sleep Hours" stroke="#10b981" fillOpacity={1} fill="url(#colorSleep)" />
               </AreaChart>
@@ -142,9 +247,29 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Chart 4: Physical Exercise Impact */}
+        <div className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+          <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+            <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.lifestyleTitle}</h3>
+            <p className="text-xs text-adaptive-muted">{t.dashboard.charts.lifestyleSub}</p>
+          </div>
+
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={exerciseImpactData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                <XAxis dataKey="activityHours" stroke="#94a3b8" fontSize={11} />
+                <YAxis stroke="#94a3b8" fontSize={11} />
+                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
+                <Bar dataKey="highRiskRate" name="High Risk Rate (%)" fill="#ef4444" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="avgAnxiety" name="Avg Anxiety Score" fill="#a855f7" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
       </div>
 
-      {/* Chart Grid Section 2: Education Level Risk */}
+      {/* Chart Grid Section 3: Education Level Prevalence */}
       <div className="glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
         <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
           <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.eduTitle}</h3>
@@ -157,7 +282,9 @@ export default function DashboardPage() {
               <XAxis dataKey="level" stroke="#94a3b8" fontSize={12} />
               <YAxis stroke="#94a3b8" fontSize={12} unit="%" />
               <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
-              <Bar dataKey="highRiskPct" name="High Risk Prevalence (%)" fill="#818cf8" radius={[8, 8, 0, 0]} />
+              <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+              <Bar dataKey="highRiskPct" name="High Risk Prevalence (%)" fill="#ef4444" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="lowRiskPct" name="Low Risk Prevalence (%)" fill="#10b981" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
