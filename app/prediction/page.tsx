@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Activity, ShieldCheck, AlertTriangle, AlertOctagon, CheckCircle2, RotateCw, Save } from 'lucide-react';
+import { Sparkles, Activity, ShieldCheck, AlertTriangle, AlertOctagon, CheckCircle2, RotateCw, Save, Stethoscope, FileText, Check } from 'lucide-react';
 import { PatientAssessmentInput, PredictionResult } from '@/lib/types';
 import { saveAssessmentRecord } from '@/lib/supabase';
+import { generateMedicalGuidance } from '@/lib/clinicalGuidance';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import confetti from 'canvas-confetti';
 import { useApp } from '@/lib/AppContext';
@@ -123,10 +124,6 @@ export default function PredictionPage() {
           badge: 'bg-emerald-500 text-white',
           icon: CheckCircle2,
           color: '#10b981',
-          recommendation:
-            language === 'id'
-              ? 'Pasien menjaga profil psikologis yang sehat. Lanjutkan mendukung rutinitas tidur, aktivitas fisik, dan hubungan sosial.'
-              : 'Patient maintains a healthy psychological profile. Continue supporting current sleep routine, physical activity, and social connections.',
         };
       case 1:
         return {
@@ -134,10 +131,6 @@ export default function PredictionPage() {
           badge: 'bg-amber-500 text-white',
           icon: AlertTriangle,
           color: '#f59e0b',
-          recommendation:
-            language === 'id'
-              ? 'Terdeteksi indikator stres dan emosional sedang. Disarankan latihan reduksi stres dan menjaga keseimbangan kerja-kehidupan.'
-              : 'Moderate stress and emotional indicators detected. Recommend stress reduction practices and monitoring work-life balance.',
         };
       default:
         return {
@@ -145,13 +138,13 @@ export default function PredictionPage() {
           badge: 'bg-rose-500 text-white',
           icon: AlertOctagon,
           color: '#ef4444',
-          recommendation:
-            language === 'id'
-              ? 'Indikator risiko kesehatan mental tinggi teridentifikasi. Sangat disarankan menjadwalkan konsultasi klinis profesional dan evaluasi konseling.'
-              : 'High mental health risk indicators identified. Recommend scheduling a professional clinical consultation and counseling evaluation.',
         };
     }
   };
+
+  const medicalGuidance = result
+    ? generateMedicalGuidance(inputs, result.prediction, language)
+    : null;
 
   const chartData = result
     ? [
@@ -373,10 +366,10 @@ export default function PredictionPage() {
 
         </div>
 
-        {/* Right Column: Prediction Results */}
+        {/* Right Column: Prediction Results & Detailed Medical Guidance */}
         <div className="lg:col-span-5 space-y-6">
           
-          {result ? (
+          {result && medicalGuidance ? (
             (() => {
               const details = getRiskDetails(result.prediction);
               const RiskIcon = details.icon;
@@ -405,11 +398,11 @@ export default function PredictionPage() {
                   </div>
 
                   {/* Recharts Probability Bar Breakdown */}
-                  <div className="space-y-2 pt-2">
+                  <div className="space-y-2 pt-1">
                     <h4 className="text-xs font-bold text-adaptive-white uppercase tracking-wider">
                       {t.prediction.results.breakdown}
                     </h4>
-                    <div className="h-44 w-full">
+                    <div className="h-40 w-full">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                           <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
@@ -428,9 +421,54 @@ export default function PredictionPage() {
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-slate-200/40 dark:border-white/10 space-y-1.5 text-xs text-adaptive-white">
-                    <span className="font-bold text-indigo-500 dark:text-indigo-300 uppercase tracking-wider">{t.prediction.results.guidance}</span>
-                    <p className="leading-relaxed">{details.recommendation}</p>
+                  {/* Parameter-Specific Medical Guidance Box */}
+                  <div className="p-5 rounded-2xl bg-black/10 dark:bg-white/5 border border-slate-200/40 dark:border-white/10 space-y-4 text-xs text-adaptive-white">
+                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200/20 dark:border-white/10 text-indigo-500 dark:text-indigo-300">
+                      <Stethoscope className="w-5 h-5" />
+                      <span className="font-extrabold uppercase tracking-wider text-sm">
+                        {language === 'id' ? 'Panduan Klinis Spesifik Medis' : 'Specific Medical Clinical Guidance'}
+                      </span>
+                    </div>
+
+                    {/* Impression */}
+                    <div className="space-y-1">
+                      <span className="font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-wider text-[11px]">
+                        {language === 'id' ? '1. Impresi Klinis (Diagnosa awal)' : '1. Clinical Impression'}
+                      </span>
+                      <p className="leading-relaxed font-semibold text-adaptive-white bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20">
+                        {medicalGuidance.impression}
+                      </p>
+                    </div>
+
+                    {/* Specific Findings */}
+                    <div className="space-y-1.5">
+                      <span className="font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-wider text-[11px]">
+                        {language === 'id' ? '2. Temuan Risiko Spesifik Parameter' : '2. Parameter-Specific Risk Findings'}
+                      </span>
+                      <ul className="space-y-1 pl-1">
+                        {medicalGuidance.specificFindings.map((finding, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5 text-adaptive-muted">
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+                            <span className="leading-relaxed">{finding}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Clinical Recommendations */}
+                    <div className="space-y-1.5">
+                      <span className="font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider text-[11px]">
+                        {language === 'id' ? '3. Rekomendasi Tindakan Klinis Spesifik' : '3. Actionable Clinical Recommendations'}
+                      </span>
+                      <ul className="space-y-1.5 pl-1">
+                        {medicalGuidance.recommendations.map((rec, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-adaptive-white">
+                            <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                            <span className="leading-relaxed font-medium">{rec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
                   {savedStatus && (
