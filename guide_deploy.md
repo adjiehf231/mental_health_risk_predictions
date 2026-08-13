@@ -1,13 +1,13 @@
-# Vercel & Supabase Complete Deployment Guide 🚀
+# Vercel & Supabase Complete Deployment & Local Execution Guide 🚀
 ## Mental Health Risk Prediction & Assessment Platform
 
-> **Cross References**: [README.md](README.md) \| [PRD.md](PRD.md) \| [qa_automation.md](qa_automation.md)
+> **Cross References**: [README.md](README.md) \| [PRD.md](PRD.md) \| [qa_automation.md](qa_automation.md) \| [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
 
-This guide provides step-by-step instructions for deploying the **Mental Health Risk Prediction** web platform using **Vercel** (Frontend & Python Serverless ML Engine) and **Supabase** (PostgreSQL Database & Authentication).
+This guide provides step-by-step instructions for running the **Mental Health Risk Prediction** platform locally and deploying it to **Vercel** (Frontend & Python Serverless ML Engine) and **Supabase** (PostgreSQL Database & Authentication).
 
 ---
 
-## 🏗️ Architecture & Deployment Topology
+## 🏗️ Architecture & Topology
 
 ```mermaid
 graph TD
@@ -25,13 +25,90 @@ graph TD
 
 ---
 
-## 📌 Prerequisites
+## 💻 Panduan Lengkap Running di Lokal (Local Setup & Run Guide)
 
-Before beginning deployment, ensure you have:
-- A **GitHub Account** (to host your repository).
-- A **Vercel Account** (connected to GitHub).
-- A **Supabase Account** ([supabase.com](https://supabase.com)).
-- **Node.js 18+** and **Python 3.10+** installed locally.
+### 📌 Prerequisites
+- **Node.js**: v18.0.0+ (`node -v`)
+- **Python**: v3.10.0+ (`python --version`)
+- **Git**: (`git --version`)
+
+---
+
+### 1️⃣ Clone & Directory Setup
+```bash
+git clone https://github.com/adjiehf231/mental_health_risk_predictions.git
+cd mental_health_risk_predictions
+```
+
+---
+
+### 2️⃣ Install Dependencies
+```bash
+# Node.js dependencies
+npm install
+
+# Python ML dependencies
+pip install -r requirements.txt
+pip install -r api/py/requirements.txt
+```
+
+---
+
+### 3️⃣ Setup Environment Variables (`.env.local`)
+Create `.env.local` in project root:
+```bash
+cp .env.example .env.local
+```
+Add your Supabase credentials (optional: if omitted, app operates automatically in **Local Demo Mode**):
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+---
+
+### 4️⃣ Running Local Servers
+
+#### 🟢 Option A: Fullstack Local Execution (Frontend Next.js + Python ML Server API)
+Use 2 separate terminal windows:
+
+**Terminal 1 (Python Serverless API Endpoint)**:
+```bash
+python -m uvicorn api.py.index:app --port 5328 --reload
+```
+*Health check URL: `http://127.0.0.1:5328/api/py/health`.*
+
+**Terminal 2 (Next.js App Server)**:
+```bash
+npm run dev
+```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser. Next.js automatically rewrites requests from `/api/py/*` to `http://127.0.0.1:5328`.
+
+---
+
+#### 🔵 Option B: Standalone Next.js Mode
+If running without python uvicorn:
+```bash
+npm run dev
+```
+Open **[http://localhost:3000](http://localhost:3000)**. The app automatically uses client fallback estimation for instant predictions.
+
+---
+
+### 5️⃣ Local Testing Commands
+```bash
+# Pre-flight Release Verification Tool
+npm run preflight
+
+# Vitest Unit Tests
+npm run test
+
+# Next.js Production Build Test
+npm run build
+
+# Playwright E2E Cross-browser Tests
+npm run test:e2e
+```
 
 ---
 
@@ -42,16 +119,15 @@ Before beginning deployment, ensure you have:
 2. Click **New Project**.
 3. Select your organization and enter:
    - **Name**: `mental-health-risk-predictions`
-   - **Database Password**: Generates a strong password (save securely).
-   - **Region**: Choose the region closest to your target users (e.g., *Singapore / Southeast Asia*).
-4. Click **Create new project** and wait 1–2 minutes for database provisioning.
+   - **Database Password**: Generates a strong password.
+   - **Region**: Choose region closest to your users.
+4. Click **Create new project**.
 
-### 1.2 Run SQL Schema & Table Initialization
-1. In the Supabase sidebar, click **SQL Editor**.
-2. Click **New query** and paste the content from [`supabase_schema.sql`](supabase_schema.sql):
+### 1.2 Run SQL Schema Initialization
+1. In Supabase sidebar, click **SQL Editor**.
+2. Paste the contents of [`supabase_schema.sql`](supabase_schema.sql) and click **Run**:
 
 ```sql
--- Create assessments table for storing patient assessments
 CREATE TABLE IF NOT EXISTS public.assessments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -90,83 +166,31 @@ CREATE INDEX IF NOT EXISTS idx_assessments_risk_level ON public.assessments(risk
 CREATE INDEX IF NOT EXISTS idx_assessments_created_at ON public.assessments(created_at DESC);
 ```
 
-3. Click **Run** to execute the script. Verify that the table `assessments` is created under **Table Editor**.
-
-### 1.3 Obtain API Credentials
-1. Navigate to **Project Settings** -> **API**.
-2. Note down the following keys:
-   - **Project URL**: `https://<your-project-ref>.supabase.co`
-   - **API Key (anon public)**: `eyJhbGciOi...`
+### 1.3 Copy Credentials
+Go to **Project Settings** -> **API** and copy `Project URL` and `anon public key`.
 
 ---
 
 ## ⚡ Step 2: Vercel Deployment Setup
 
-### 2.1 Push Code to GitHub
-Ensure all code and model artifacts are committed and pushed to GitHub:
-```bash
-git add .
-git commit -m "feat: complete Next.js app with Python serverless API and Supabase integration"
-git push origin main
-```
-
-### 2.2 Import Project to Vercel
-1. Log in to [Vercel Dashboard](https://vercel.com/dashboard).
-2. Click **Add New...** -> **Project**.
-3. Select your GitHub repository: `adjiehf231/mental_health_risk_predictions`.
-4. Configure Project Settings:
-   - **Framework Preset**: `Next.js`
-   - **Root Directory**: `./` (leave default)
-
-### 2.3 Add Environment Variables in Vercel
-Expand the **Environment Variables** section and add:
-
-| Key | Value | Description |
-| :--- | :--- | :--- |
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://<your-project-ref>.supabase.co` | Supabase Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOi...` | Supabase Public Anon Key |
-
-### 2.4 Verify Serverless Engine (`vercel.json`)
-Ensure `vercel.json` exists in the repository root with the following configuration:
-```json
-{
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "api/py/index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/py/predict",
-      "dest": "api/py/index.py"
-    }
-  ]
-}
-```
-
-### 2.5 Deploy Project
-1. Click **Deploy**.
-2. Vercel will build the Next.js static and server pages, install Python packages from `api/py/requirements.txt`, and deploy the Python Serverless function.
-3. Upon completion, Vercel will provide your deployment domain (e.g. `https://mental-health-risk-predictions.vercel.app`).
+1. Push your changes to GitHub:
+   ```bash
+   git add .
+   git commit -m "feat: complete Next.js app with Python serverless API and Supabase integration"
+   git push origin main
+   ```
+2. Go to [Vercel Dashboard](https://vercel.com/dashboard) -> **Add New...** -> **Project**.
+3. Import `adjiehf231/mental_health_risk_predictions`.
+4. Add Environment Variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` = `https://<your-project-ref>.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = `<your-anon-key>`
+5. Click **Deploy**. Vercel will build the frontend pages and deploy the Python serverless ML endpoint!
 
 ---
 
-## 🔍 Step 3: Post-Deployment Verification & Smoke Testing
+## 🔍 Step 3: Post-Deployment Verification
 
-### 1. Test Web Application Pages
-- **Homepage (`/`)**: Verify hero section and navigation links.
-- **AI Risk Predictor (`/prediction`)**: Adjust sliders and submit a patient assessment. Confirm that the result card displays confidence score, risk badge, and probability breakdown.
-- **EDA Dashboard (`/dashboard`)**: Verify interactive Recharts graphs render dataset distributions.
-- **ML Models (`/models`)**: Confirm decision tree model metrics (99.5% accuracy) display properly.
-- **Assessment History (`/history`)**: Check that newly submitted assessments appear in the Supabase history table.
-
-### 2. Test Serverless ML API Endpoint
-Using `curl` or Postman, verify the API endpoint directly:
+Verify live serverless prediction endpoint with `curl`:
 ```bash
 curl -X POST https://mental-health-risk-predictions.vercel.app/api/py/predict \
   -H "Content-Type: application/json" \
@@ -182,37 +206,11 @@ curl -X POST https://mental-health-risk-predictions.vercel.app/api/py/predict \
     "depression_score": 3
   }'
 ```
-**Expected Response**:
-```json
-{
-  "prediction": 0,
-  "risk_label": "Low Risk (0)",
-  "confidence": 0.985,
-  "probabilities": [0.985, 0.012, 0.003]
-}
-```
-
----
-
-## 🌐 Step 4: Custom Domain & SSL (Optional)
-
-1. In the Vercel Dashboard, go to **Settings** -> **Domains**.
-2. Enter your custom domain (e.g. `mentalhealth.yourdomain.com`).
-3. Follow Vercel's DNS prompt to add a `CNAME` or `A` record in your DNS provider (Cloudflare, Namecheap, GoDaddy).
-4. Vercel will automatically issue a free SSL certificate.
 
 ---
 
 ## 🛠️ Troubleshooting & Common Fixes
 
-### Issue 1: `selected_features.pkl missing` or Model File Not Found
-- **Root Cause**: Model `.pkl` files were omitted by `.gitignore`.
-- **Fix**: Ensure `models/best_model.pkl`, `models/scaler.pkl`, `models/selector.pkl`, `models/encoder.pkl`, and `models/selected_features.pkl` are tracked in git.
-
-### Issue 2: Supabase Connection Offline / RLS Error
-- **Root Cause**: `NEXT_PUBLIC_SUPABASE_URL` missing or RLS policy blocking inserts.
-- **Fix**: Verify environment variables in Vercel settings and ensure SQL RLS policies in Step 1.2 were executed.
-
-### Issue 3: Vercel Python Function Timeout
-- **Root Cause**: Heavy cold starts or large package imports.
-- **Fix**: Ensure `api/py/requirements.txt` is kept lightweight (`scikit-learn==1.4.0`, `joblib==1.3.1`, `numpy==1.26.0`, `pandas==2.2.0`).
+- **Model File Not Found**: Ensure `models/*.pkl` files are committed to git.
+- **Supabase Disconnected**: Ensure `NEXT_PUBLIC_SUPABASE_URL` environment variables are added in Vercel settings.
+- **Python Timeout**: Keep `api/py/requirements.txt` lightweight.
