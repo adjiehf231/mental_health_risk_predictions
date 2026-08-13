@@ -2,42 +2,61 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-:root {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 }
 
-/* Dark Mode Default Theme */
+/* ==========================================================================
+   THEME STYLES - ULTRA PREMIUM DARK & LIGHT MODES
+   ========================================================================== */
+
+/* --- DARK MODE (Obsidian Midnight Glass) --- */
+html.dark {
+  color-scheme: dark;
+}
+
 html.dark body {
-  background: min-h-screen linear-gradient(135deg, #0b0f19 0%, #151928 50%, #0b0f19 100%);
+  background-color: #07090e;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 100% 60%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 0% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+  background-attachment: fixed;
   color: #f8fafc;
 }
 
-/* Light Mode Modern Theme */
-html.light body {
-  background: min-h-screen linear-gradient(135deg, #f8fafc 0%, #edf2f7 50%, #e2e8f0 100%);
-  color: #0f172a;
+html.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Dark Mode Glass Panels */
-html.dark .glass-panel {
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+html.dark .glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.dark .glass-panel-hover:hover {
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px 0 rgba(99, 102, 241, 0.2);
+  background: rgba(30, 41, 59, 0.75);
+  border-color: rgba(129, 140, 248, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 html.dark .glass-input {
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+html.dark .glass-input:focus {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
 }
 
 html.dark .text-adaptive-white {
@@ -48,26 +67,52 @@ html.dark .text-adaptive-muted {
   color: #94a3b8;
 }
 
-/* Light Mode Native Panels */
+/* --- LIGHT MODE (Sleek Modern Porcelain) --- */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 60%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 0% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: #0f172a;
+}
+
 html.light .glass-panel {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+html.light .glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.light .glass-panel-hover:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(99, 102, 241, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px 0 rgba(99, 102, 241, 0.12);
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.12), 0 10px 20px -5px rgba(0, 0, 0, 0.04);
 }
 
 html.light .glass-input {
   background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #0f172a;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+html.light .glass-input:focus {
+  background: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
 html.light .text-adaptive-white {
@@ -78,10 +123,33 @@ html.light .text-adaptive-muted {
   color: #475569;
 }
 
-.glass-input:focus {
+/* ==========================================================================
+   CUSTOM RANGE SLIDERS & SCROLLBARS
+   ========================================================================== */
+
+input[type='range'] {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.25);
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  transition: background 0.2s ease;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #6366f1;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #4f46e5;
 }
 
 /* Custom Scrollbars */
@@ -95,14 +163,24 @@ html.light .text-adaptive-muted {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
 }
 
 html.light ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: rgba(203, 213, 225, 0.8);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #6366f1;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

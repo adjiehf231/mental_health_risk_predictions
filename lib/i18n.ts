@@ -15,7 +15,6 @@ export const translations = {
       modeLive: 'Live Mode',
     },
     home: {
-      badge: 'Next.js 14 + Vercel Python Serverless + Machine Learning',
       title: 'Intelligent Mental Health Risk Analytics Platform',
       subtitle: 'Empowering individuals and counselors with high-accuracy machine learning predictions, interactive EDA charts, and real-time clinical assessment logging.',
       ctaStart: 'Start Risk Assessment',
@@ -185,7 +184,6 @@ export const translations = {
       modeLive: 'Mode Langsung',
     },
     home: {
-      badge: 'Next.js 14 + Vercel Python Serverless + Machine Learning',
       title: 'Platform Analisis Risiko Kesehatan Mental Cerdas',
       subtitle: 'Memberdayakan individu dan konselor dengan prediksi machine learning akurasi tinggi, grafik EDA interaktif, dan pencatatan penilaian klinis real-time.',
       ctaStart: 'Mulai Penilaian Risiko',
@@ -197,7 +195,7 @@ export const translations = {
         datasetSub: 'Dataset Klinis Kaggle',
         features: 'Fitur Terpilih',
         featuresSub: 'SelectKBest F-Classif',
-        latency: 'Latensi Respon',
+        latency: 'Respon Latensi',
         latencySub: 'Serverless Python API',
       },
       modulesTitle: 'Modul Platform',
