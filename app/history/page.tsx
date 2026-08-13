@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { History, Search, Download, Filter, Database, Calendar, ShieldAlert, FileText } from 'lucide-react';
 import { AssessmentRecord } from '@/lib/types';
-import { fetchAssessmentHistory, isSupabaseConfigured } from '@/lib/supabase';
+import { fetchAssessmentHistory } from '@/lib/supabase';
 import ClinicalReportModal from '@/components/ClinicalReportModal';
+import { useApp } from '@/lib/AppContext';
 
 export default function HistoryPage() {
+  const { t, language } = useApp();
   const [records, setRecords] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterRisk, setFilterRisk] = useState<string>('ALL');
@@ -63,9 +65,9 @@ export default function HistoryPage() {
   };
 
   const getBadgeStyle = (risk: string) => {
-    if (risk.includes('Low')) return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-    if (risk.includes('Moderate')) return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-    return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+    if (risk.includes('Low') || risk.includes('Rendah')) return 'bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/30';
+    if (risk.includes('Moderate') || risk.includes('Sedang')) return 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/30';
+    return 'bg-rose-500/10 text-rose-500 dark:text-rose-400 border-rose-500/30';
   };
 
   return (
@@ -74,12 +76,12 @@ export default function HistoryPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 mb-2">
-            <Database className="w-4 h-4 text-amber-400" />
-            <span>{isSupabaseConfigured ? 'Supabase PostgreSQL Sync' : 'Local Persistence Sync'}</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20 mb-2">
+            <Database className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+            <span>{t.history.badge}</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white">📜 Assessment History Log</h1>
-          <p className="text-slate-400 text-sm">Real-time log of mental health risk assessments and patient records.</p>
+          <h1 className="text-3xl font-extrabold text-adaptive-white">📜 {t.history.title}</h1>
+          <p className="text-adaptive-muted text-sm">{t.history.subtitle}</p>
         </div>
 
         <button
@@ -88,81 +90,79 @@ export default function HistoryPage() {
           className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs text-white bg-indigo-600 hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-600/20 disabled:opacity-50"
         >
           <Download className="w-4 h-4" />
-          <span>Export CSV Report</span>
+          <span>{t.history.exportBtn}</span>
         </button>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="glass-panel p-4 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200/40 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
         
-        {/* Search */}
         <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search logs..."
+            placeholder={t.history.searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full glass-input pl-10 pr-4 py-2 rounded-xl text-xs"
           />
         </div>
 
-        {/* Filter Dropdown */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-indigo-400" />
-          <span className="text-xs text-slate-300 font-medium">Filter Risk:</span>
+          <Filter className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+          <span className="text-xs text-adaptive-white font-medium">{t.history.filterLabel}</span>
           <select
             value={filterRisk}
             onChange={(e) => setFilterRisk(e.target.value)}
             className="glass-input px-3 py-1.5 rounded-xl text-xs"
           >
-            <option value="ALL" className="bg-slate-900">All Risk Levels</option>
-            <option value="Low" className="bg-slate-900">Low Risk Only</option>
-            <option value="Moderate" className="bg-slate-900">Moderate Risk Only</option>
-            <option value="High" className="bg-slate-900">High Risk Only</option>
+            <option value="ALL" className="bg-slate-100 dark:bg-slate-900">{t.history.filterAll}</option>
+            <option value="Low" className="bg-slate-100 dark:bg-slate-900">{t.history.filterLow}</option>
+            <option value="Moderate" className="bg-slate-100 dark:bg-slate-900">{t.history.filterMod}</option>
+            <option value="High" className="bg-slate-100 dark:bg-slate-900">{t.history.filterHigh}</option>
           </select>
         </div>
 
       </div>
 
       {/* Records Table */}
-      <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden">
+      <div className="glass-panel rounded-3xl border border-slate-200/40 dark:border-white/10 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-slate-400 space-y-2">
-            <History className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
+            <History className="w-8 h-8 text-indigo-500 dark:text-indigo-400 animate-spin mx-auto" />
             <p className="text-xs font-medium">Fetching history records...</p>
           </div>
         ) : filteredRecords.length === 0 ? (
           <div className="p-12 text-center text-slate-400 space-y-3">
-            <ShieldAlert className="w-10 h-10 text-slate-500 mx-auto" />
-            <p className="text-sm font-semibold text-white">No Assessment Records Found</p>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Perform an AI Risk Assessment on the <a href="/prediction" className="text-indigo-400 underline">Prediction Page</a> to populate your database history log.
+            <ShieldAlert className="w-10 h-10 text-slate-400 mx-auto" />
+            <p className="text-sm font-semibold text-adaptive-white">{t.history.noRecordsTitle}</p>
+            <p className="text-xs text-adaptive-muted max-w-sm mx-auto">
+              {t.history.noRecordsDesc}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-200">
-              <thead className="bg-white/5 text-xs text-slate-400 uppercase tracking-wider border-b border-white/10">
+            <table className="w-full text-left text-sm text-adaptive-white">
+              <thead className="bg-slate-200/40 dark:bg-white/5 text-xs text-adaptive-muted uppercase tracking-wider border-b border-slate-200/40 dark:border-white/10">
                 <tr>
-                  <th className="px-6 py-4">Timestamp</th>
-                  <th className="px-6 py-4">Demographics</th>
-                  <th className="px-6 py-4">Sleep / Stress</th>
-                  <th className="px-6 py-4">Anxiety / Dep</th>
-                  <th className="px-6 py-4">Risk Level</th>
-                  <th className="px-6 py-4 text-right">Confidence</th>
+                  <th className="px-6 py-4">{t.history.cols.time}</th>
+                  <th className="px-6 py-4">{t.history.cols.demo}</th>
+                  <th className="px-6 py-4">{t.history.cols.sleep}</th>
+                  <th className="px-6 py-4">{t.history.cols.scores}</th>
+                  <th className="px-6 py-4">{t.history.cols.risk}</th>
+                  <th className="px-6 py-4 text-right">{t.history.cols.conf}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-xs">
+              <tbody className="divide-y divide-slate-200/30 dark:divide-white/5 text-xs">
                 {filteredRecords.map((r, idx) => (
-                  <tr key={r.id || idx} className="hover:bg-white/5">
-                    <td className="px-6 py-4 text-slate-400">
+                  <tr key={r.id || idx} className="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-adaptive-muted">
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                        <Calendar className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
                         <span>{r.created_at ? new Date(r.created_at).toLocaleString() : 'Just now'}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-white font-medium">
+                    <td className="px-6 py-4 text-adaptive-white font-medium">
                       {r.age} yrs • {r.gender} • {r.education_level}
                     </td>
                     <td className="px-6 py-4">
@@ -176,13 +176,13 @@ export default function HistoryPage() {
                         {r.risk_level}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right font-extrabold text-white">
+                    <td className="px-6 py-4 text-right font-extrabold text-adaptive-white">
                       <div className="flex items-center justify-end gap-3">
                         <span>{typeof r.confidence === 'number' ? r.confidence.toFixed(1) : r.confidence}%</span>
                         <button
                           onClick={() => setSelectedRecord(r)}
-                          className="p-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 transition-colors"
-                          title="View Clinical Report Summary"
+                          className="p-1.5 rounded-lg bg-indigo-600/20 dark:bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-600 dark:text-indigo-300 transition-colors"
+                          title={t.history.viewReport}
                         >
                           <FileText className="w-4 h-4" />
                         </button>

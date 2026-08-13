@@ -4,49 +4,78 @@
 
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --bg-gradient-from: #0f172a;
-  --bg-gradient-to: #1e1b4b;
 }
 
-body {
-  font-family: var(--font-sans);
-  background: min-h-screen linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+/* Dark Mode Default Theme */
+html.dark body {
+  background: min-h-screen linear-gradient(135deg, #0b0f19 0%, #151928 50%, #0b0f19 100%);
   color: #f8fafc;
-  overflow-x: hidden;
 }
 
-/* Custom Glassmorphism Styles */
-.glass-panel {
-  background: rgba(30, 41, 59, 0.65);
+/* Light Mode Modern Theme */
+html.light body {
+  background: min-h-screen linear-gradient(135deg, #f8fafc 0%, #edf2f7 50%, #e2e8f0 100%);
+  color: #0f172a;
+}
+
+/* Dark Mode Glass Panels */
+html.dark .glass-panel {
+  background: rgba(17, 24, 39, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
 }
 
-.glass-panel-hover {
-  transition: all 0.3s ease;
-}
-
-.glass-panel-hover:hover {
-  background: rgba(30, 41, 59, 0.8);
+html.dark .glass-panel-hover:hover {
+  background: rgba(30, 41, 59, 0.85);
   border-color: rgba(99, 102, 241, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.2);
+  box-shadow: 0 16px 36px 0 rgba(99, 102, 241, 0.2);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-}
-
-.glass-input {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+html.dark .glass-input {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  transition: all 0.2s ease;
+}
+
+html.dark .text-adaptive-white {
+  color: #ffffff;
+}
+
+html.dark .text-adaptive-muted {
+  color: #94a3b8;
+}
+
+/* Light Mode Native Panels */
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+html.light .glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px 0 rgba(99, 102, 241, 0.12);
+}
+
+html.light .glass-input {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+html.light .text-adaptive-white {
+  color: #0f172a;
+}
+
+html.light .text-adaptive-muted {
+  color: #475569;
 }
 
 .glass-input:focus {
@@ -55,19 +84,23 @@ body {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
-/* Scrollbar Customization */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
 }
 
 ::-webkit-scrollbar-thumb:hover {

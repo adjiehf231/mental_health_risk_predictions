@@ -20,7 +20,7 @@ export interface PatientAssessmentInput {
 
 export interface PredictionResult {
   prediction: number;
-  risk_label: 'Low Risk (0)' | 'Moderate Risk (1)' | 'High Risk (2)';
+  risk_label: string;
   confidence: number;
   probabilities: [number, number, number];
   model_used?: string;

@@ -1,9 +1,12 @@
 'use client';
 
-import { Cpu, CheckCircle2, Zap, Layers, ShieldCheck, Award } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Cpu, CheckCircle2, Zap, ShieldCheck, Award } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useApp } from '@/lib/AppContext';
 
 export default function ModelsPage() {
+  const { t } = useApp();
+
   const modelMetrics = [
     { name: 'C4.5 Decision Tree', accuracy: 99.5, f1: 99.3, precision: 99.4, recall: 99.2, isBest: true, color: '#10b981' },
     { name: 'Random Forest', accuracy: 97.2, f1: 96.8, precision: 97.0, recall: 96.6, isBest: false, color: '#6366f1' },
@@ -30,15 +33,15 @@ export default function ModelsPage() {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-          <Cpu className="w-4 h-4 text-emerald-400" />
-          <span>Cross-Validation Machine Learning Benchmarks</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20">
+          <Cpu className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+          <span>{t.models.badge}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
-          🤖 Algorithm Performance & Model Explorer
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-adaptive-white">
+          🤖 {t.models.title}
         </h1>
-        <p className="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base">
-          Comparison of 5 machine learning models evaluated using 5-fold cross-validation on Kaggle dataset.
+        <p className="text-adaptive-muted max-w-2xl mx-auto text-sm sm:text-base">
+          {t.models.subtitle}
         </p>
       </div>
 
@@ -50,70 +53,70 @@ export default function ModelsPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Top Performing Model</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{t.models.topTitle}</span>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white uppercase">
-                WINNER
+                {t.models.topWinner}
               </span>
             </div>
-            <h2 className="text-2xl font-extrabold text-white mt-0.5">C4.5 Decision Tree Classifier</h2>
-            <p className="text-xs text-slate-300 mt-1">
-              Max Depth: 10 | Criterion: Gini | K-Fold Cross Validation: 5
+            <h2 className="text-2xl font-extrabold text-adaptive-white mt-0.5">{t.models.topModel}</h2>
+            <p className="text-xs text-adaptive-muted mt-1">
+              {t.models.topSub}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-6 text-center">
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10 px-5">
-            <span className="text-xs text-slate-400 font-medium block">Accuracy</span>
-            <span className="text-3xl font-extrabold text-emerald-400">99.5%</span>
+          <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-slate-200/40 dark:border-white/10 px-5">
+            <span className="text-xs text-adaptive-muted font-medium block">Accuracy</span>
+            <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">99.5%</span>
           </div>
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10 px-5">
-            <span className="text-xs text-slate-400 font-medium block">F1-Score</span>
-            <span className="text-3xl font-extrabold text-emerald-400">99.3%</span>
+          <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-slate-200/40 dark:border-white/10 px-5">
+            <span className="text-xs text-adaptive-muted font-medium block">F1-Score</span>
+            <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">99.3%</span>
           </div>
         </div>
       </div>
 
       {/* Model Comparison Table */}
-      <div className="glass-panel rounded-3xl border border-white/10 overflow-hidden">
-        <div className="p-6 border-b border-white/10">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-indigo-400" />
-            5-Algorithm Evaluation Matrix
+      <div className="glass-panel rounded-3xl border border-slate-200/40 dark:border-white/10 overflow-hidden">
+        <div className="p-6 border-b border-slate-200/20 dark:border-white/10">
+          <h3 className="text-lg font-bold text-adaptive-white flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            {t.models.tableTitle}
           </h3>
-          <p className="text-xs text-slate-400">Evaluating 25,000 observations across key classification metrics</p>
+          <p className="text-xs text-adaptive-muted">{t.models.tableSub}</p>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-200">
-            <thead className="bg-white/5 text-xs text-slate-400 uppercase tracking-wider border-b border-white/10">
+          <table className="w-full text-left text-sm text-adaptive-white">
+            <thead className="bg-slate-200/40 dark:bg-white/5 text-xs text-adaptive-muted uppercase tracking-wider border-b border-slate-200/40 dark:border-white/10">
               <tr>
-                <th className="px-6 py-4">Algorithm Model</th>
-                <th className="px-6 py-4">Accuracy (%)</th>
-                <th className="px-6 py-4">F1-Score (%)</th>
-                <th className="px-6 py-4">Precision (%)</th>
-                <th className="px-6 py-4">Recall (%)</th>
-                <th className="px-6 py-4 text-right">Status</th>
+                <th className="px-6 py-4">{t.models.columns.algo}</th>
+                <th className="px-6 py-4">{t.models.columns.acc}</th>
+                <th className="px-6 py-4">{t.models.columns.f1}</th>
+                <th className="px-6 py-4">{t.models.columns.prec}</th>
+                <th className="px-6 py-4">{t.models.columns.rec}</th>
+                <th className="px-6 py-4 text-right">{t.models.columns.status}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-slate-200/30 dark:divide-white/5">
               {modelMetrics.map((m, idx) => (
-                <tr key={idx} className={m.isBest ? 'bg-emerald-500/10 font-medium' : 'hover:bg-white/5'}>
-                  <td className="px-6 py-4 flex items-center gap-2 font-bold text-white">
+                <tr key={idx} className={m.isBest ? 'bg-emerald-500/10 font-medium' : 'hover:bg-black/5 dark:hover:bg-white/5 transition-colors'}>
+                  <td className="px-6 py-4 flex items-center gap-2 font-bold text-adaptive-white">
                     <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: m.color }} />
                     {m.name}
                   </td>
-                  <td className="px-6 py-4 text-white font-semibold">{m.accuracy}%</td>
+                  <td className="px-6 py-4 font-semibold text-adaptive-white">{m.accuracy}%</td>
                   <td className="px-6 py-4">{m.f1}%</td>
                   <td className="px-6 py-4">{m.precision}%</td>
                   <td className="px-6 py-4">{m.recall}%</td>
                   <td className="px-6 py-4 text-right">
                     {m.isBest ? (
-                      <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 bg-emerald-500/20 px-2.5 py-1 rounded-full border border-emerald-500/30">
+                      <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/20 px-2.5 py-1 rounded-full border border-emerald-500/30">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Best Model
                       </span>
                     ) : (
-                      <span className="text-xs text-slate-400">Evaluated</span>
+                      <span className="text-xs text-adaptive-muted">Evaluated</span>
                     )}
                   </td>
                 </tr>
@@ -124,13 +127,13 @@ export default function ModelsPage() {
       </div>
 
       {/* Feature Importance Section */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
-        <div className="border-b border-white/10 pb-3">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-400" />
-            Top Feature Importance Scores (SelectKBest f_classif)
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+        <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+          <h3 className="text-lg font-bold text-adaptive-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+            {t.models.featureTitle}
           </h3>
-          <p className="text-xs text-slate-400">Feature impact scores contributing to mental health risk classification</p>
+          <p className="text-xs text-adaptive-muted">{t.models.featureSub}</p>
         </div>
 
         <div className="h-72 w-full">

@@ -2,9 +2,11 @@
 
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { BarChart3, Database, Layers, Activity, Users } from 'lucide-react';
+import { useApp } from '@/lib/AppContext';
 
 export default function DashboardPage() {
-  // EDA Dataset Statistics (derived from 25,000 records Kaggle Dataset)
+  const { t } = useApp();
+
   const riskDistribution = [
     { name: 'Low Risk (0)', value: 11250, color: '#10b981', percent: '45.0%' },
     { name: 'Moderate Risk (1)', value: 8750, color: '#f59e0b', percent: '35.0%' },
@@ -19,11 +21,6 @@ export default function DashboardPage() {
     { ageGroup: '56-65+', avgStress: 4.2, avgSleep: 7.8, avgAnxiety: 3.8 },
   ];
 
-  const genderBreakdown = [
-    { gender: 'Female', Low: 5600, Moderate: 4400, High: 2500 },
-    { gender: 'Male', Low: 5650, Moderate: 4350, High: 2500 },
-  ];
-
   const educationDistribution = [
     { level: 'High School', count: 6250, highRiskPct: 24.5 },
     { level: 'Bachelor', count: 11250, highRiskPct: 18.2 },
@@ -36,35 +33,35 @@ export default function DashboardPage() {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-          <BarChart3 className="w-4 h-4 text-cyan-400" />
-          <span>Exploratory Data Analysis (EDA)</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border border-cyan-500/20">
+          <BarChart3 className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <span>{t.dashboard.badge}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
-          📊 Dataset EDA & Statistical Insights
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-adaptive-white">
+          📊 {t.dashboard.title}
         </h1>
-        <p className="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base">
-          Interactive analysis of 25,000+ patient records, risk factor distributions, and psychological score correlations.
+        <p className="text-adaptive-muted max-w-2xl mx-auto text-sm sm:text-base">
+          {t.dashboard.subtitle}
         </p>
       </div>
 
       {/* Stats Counter Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Dataset Records', val: '25,000', sub: 'Clinical Observations', icon: Database },
-          { label: 'Selected Features', val: '15 Top', sub: 'f_classif Feature Scoring', icon: Layers },
-          { label: 'Risk Distribution', val: '45% / 35% / 20%', sub: 'Low / Mod / High', icon: Activity },
-          { label: 'Demographic Groups', val: '4 Levels', sub: 'Edu & Gender Strata', icon: Users },
+          { label: t.dashboard.stats.records, val: '25,000', sub: 'Clinical Observations', icon: Database },
+          { label: t.dashboard.stats.features, val: '15 Top', sub: 'f_classif Feature Scoring', icon: Layers },
+          { label: t.dashboard.stats.distribution, val: '45% / 35% / 20%', sub: 'Low / Mod / High', icon: Activity },
+          { label: t.dashboard.stats.demographics, val: '4 Levels', sub: 'Edu & Gender Strata', icon: Users },
         ].map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <div key={i} className="glass-panel p-5 rounded-2xl border border-white/10 space-y-1">
-              <div className="flex items-center justify-between text-cyan-400 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{stat.label}</span>
+            <div key={i} className="glass-panel p-5 rounded-2xl border border-slate-200/40 dark:border-white/10 space-y-1">
+              <div className="flex items-center justify-between text-cyan-600 dark:text-cyan-400 mb-2">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-adaptive-muted">{stat.label}</span>
                 <Icon className="w-4 h-4" />
               </div>
-              <p className="text-2xl sm:text-3xl font-extrabold text-white">{stat.val}</p>
-              <p className="text-xs text-cyan-300/80">{stat.sub}</p>
+              <p className="text-2xl sm:text-3xl font-extrabold text-adaptive-white">{stat.val}</p>
+              <p className="text-xs text-cyan-600 dark:text-cyan-300">{stat.sub}</p>
             </div>
           );
         })}
@@ -73,11 +70,11 @@ export default function DashboardPage() {
       {/* Chart Grid Section 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Risk Level Distribution (Pie + Breakdown) */}
-        <div className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-white/10 space-y-4">
-          <div className="border-b border-white/10 pb-3">
-            <h3 className="text-lg font-bold text-white">Mental Health Risk Distribution</h3>
-            <p className="text-xs text-slate-400">Class breakdown across 25,000 patient records</p>
+        {/* Risk Level Distribution */}
+        <div className="lg:col-span-5 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+          <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+            <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.riskTitle}</h3>
+            <p className="text-xs text-adaptive-muted">{t.dashboard.charts.riskSub}</p>
           </div>
 
           <div className="h-60 w-full">
@@ -106,20 +103,20 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
             {riskDistribution.map((item, i) => (
-              <div key={i} className="p-2.5 rounded-xl bg-white/5 border border-white/5 space-y-1">
+              <div key={i} className="p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-slate-200/40 dark:border-white/5 space-y-1">
                 <span className="w-2 h-2 rounded-full inline-block mr-1" style={{ backgroundColor: item.color }} />
-                <span className="text-slate-300 font-medium block text-[11px]">{item.name.split(' ')[0]}</span>
-                <p className="font-bold text-white">{item.percent}</p>
+                <span className="text-adaptive-muted font-medium block text-[11px]">{item.name.split(' ')[0]}</span>
+                <p className="font-bold text-adaptive-white">{item.percent}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Age Group vs Stress & Sleep Trends */}
-        <div className="lg:col-span-7 glass-panel p-6 rounded-3xl border border-white/10 space-y-4">
-          <div className="border-b border-white/10 pb-3">
-            <h3 className="text-lg font-bold text-white">Age Group vs. Work Stress & Sleep Hours</h3>
-            <p className="text-xs text-slate-400">Trend of work stress and sleep duration by age bracket</p>
+        <div className="lg:col-span-7 glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+          <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+            <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.ageTitle}</h3>
+            <p className="text-xs text-adaptive-muted">{t.dashboard.charts.ageSub}</p>
           </div>
 
           <div className="h-72 w-full">
@@ -148,10 +145,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Chart Grid Section 2: Education Level Risk */}
-      <div className="glass-panel p-6 rounded-3xl border border-white/10 space-y-4">
-        <div className="border-b border-white/10 pb-3">
-          <h3 className="text-lg font-bold text-white">Education Level & High Risk Prevalence (%)</h3>
-          <p className="text-xs text-slate-400">Prevalence of high risk cases across educational strata</p>
+      <div className="glass-panel p-6 rounded-3xl border border-slate-200/40 dark:border-white/10 space-y-4">
+        <div className="border-b border-slate-200/20 dark:border-white/10 pb-3">
+          <h3 className="text-lg font-bold text-adaptive-white">{t.dashboard.charts.eduTitle}</h3>
+          <p className="text-xs text-adaptive-muted">{t.dashboard.charts.eduSub}</p>
         </div>
 
         <div className="h-64 w-full">

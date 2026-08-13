@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { AppProvider } from '@/lib/AppContext';
 
 export const metadata: Metadata = {
   title: 'MindRisk AI - Mental Health Risk Prediction Platform',
@@ -13,7 +14,6 @@ export const metadata: Metadata = {
     'Machine Learning',
     'Decision Tree',
     'Next.js',
-    'Supabase',
     'Healthcare Analytics',
   ],
 };
@@ -24,11 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="flex flex-col min-h-screen antialiased bg-slate-950 text-slate-100">
-        <Navbar />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+    <html lang="id" className="dark">
+      <body className="flex flex-col min-h-screen antialiased">
+        <AppProvider>
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </AppProvider>
       </body>
     </html>
   );
