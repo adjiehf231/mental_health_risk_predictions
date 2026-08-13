@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:host": "next dev -H 0.0.0.0 -p 3000",
+    "dev:host": "node scripts/dev-lan.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
