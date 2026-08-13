@@ -1,15 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { History, Search, Download, Filter, Database, Calendar, ShieldAlert } from 'lucide-react';
+import { History, Search, Download, Filter, Database, Calendar, ShieldAlert, FileText } from 'lucide-react';
 import { AssessmentRecord } from '@/lib/types';
 import { fetchAssessmentHistory, isSupabaseConfigured } from '@/lib/supabase';
+import ClinicalReportModal from '@/components/ClinicalReportModal';
 
 export default function HistoryPage() {
   const [records, setRecords] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterRisk, setFilterRisk] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedRecord, setSelectedRecord] = useState<AssessmentRecord | null>(null);
 
   useEffect(() => {
     loadHistory();
@@ -175,7 +177,16 @@ export default function HistoryPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right font-extrabold text-white">
-                      {typeof r.confidence === 'number' ? r.confidence.toFixed(1) : r.confidence}%
+                      <div className="flex items-center justify-end gap-3">
+                        <span>{typeof r.confidence === 'number' ? r.confidence.toFixed(1) : r.confidence}%</span>
+                        <button
+                          onClick={() => setSelectedRecord(r)}
+                          className="p-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 transition-colors"
+                          title="View Clinical Report Summary"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -184,6 +195,14 @@ export default function HistoryPage() {
           </div>
         )}
       </div>
+
+      {/* Clinical Report Modal */}
+      {selectedRecord && (
+        <ClinicalReportModal
+          record={selectedRecord}
+          onClose={() => setSelectedRecord(null)}
+        />
+      )}
 
     </div>
   );
